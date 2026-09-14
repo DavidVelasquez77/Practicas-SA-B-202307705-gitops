@@ -48,7 +48,7 @@ api-gateway:
     enabled: false
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-api-gateway
-    tag: "v0.8.0"
+    tag: "v0.8.4"
     pullPolicy: Always
   service:
     type: LoadBalancer
@@ -59,31 +59,31 @@ api-gateway:
 auth-service:
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-auth-service
-    tag: "v0.8.0"
+    tag: "v0.8.4"
     pullPolicy: Always
 
 comics-service:
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-comics-service
-    tag: "v0.8.0"
+    tag: "v0.8.4"
     pullPolicy: Always
 
 rentals-service:
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-rentals-service
-    tag: "v0.8.0"
+    tag: "v0.8.4"
     pullPolicy: Always
 
 copies-service:
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-copies-service
-    tag: "v0.8.0"
+    tag: "v0.8.4"
     pullPolicy: Always
 
 copies-consumer:
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-copies-service
-    tag: "v0.8.0"
+    tag: "v0.8.4"
     pullPolicy: Always
 
 operations-jobs:
@@ -91,7 +91,7 @@ operations-jobs:
     namespace: sa-p8
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-operations-jobs
-    tag: "v0.8.0"
+    tag: "v0.8.4"
     pullPolicy: Always
   database:
     existingSecret: comicrent-database-secret
