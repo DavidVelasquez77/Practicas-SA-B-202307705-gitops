@@ -19,6 +19,21 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: sa-p8
+  ignoreDifferences:
+    # Argo Rollouts escribe esta anotación al crear una nueva revisión.
+    - group: argoproj.io
+      kind: Rollout
+      name: comicrent-api-gateway-rollout
+      namespace: sa-p8
+      jsonPointers:
+        - /metadata/annotations/rollout.argoproj.io~1revision
+    # Bitnami RabbitMQ genera valores internos en este Secret durante el primer arranque.
+    - group: ""
+      kind: Secret
+      name: comicrent-rabbitmq
+      namespace: sa-p8
+      jsonPointers:
+        - /data
   syncPolicy:
     automated:
       prune: true
