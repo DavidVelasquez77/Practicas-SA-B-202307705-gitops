@@ -17,7 +17,7 @@ spec:
       app.kubernetes.io/instance: comicrent
   strategy:
     canary:
-      stableService: comicrent-api-gateway
+      stableService: comicrent-p8-api-gateway
       canaryService: comicrent-api-gateway-canary
       steps:
         - setWeight: 10
