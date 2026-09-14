@@ -8,7 +8,12 @@ metadata:
 spec:
   type: {{ .Values.service.type | default "ClusterIP" }}
   selector:
-    {{- include "api-gateway.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/name: api-gateway
+    {{- if .Values.global.progressiveDelivery.apiGateway.enabled }}
+    app.kubernetes.io/instance: comicrent
+    {{- else }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- end }}
   ports:
     - name: http
       port: {{ .Values.service.port }}
