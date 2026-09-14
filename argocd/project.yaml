@@ -10,7 +10,16 @@ spec:
   destinations:
     - namespace: sa-p8
       server: https://kubernetes.default.svc
-  clusterResourceWhitelist:`n    - group: ""`n      kind: Namespace`n    - group: argoproj.io`n      kind: Rollout`n    - group: argoproj.io`n      kind: AnalysisTemplate`n    - group: kyverno.io`n      kind: ClusterPolicy`n  namespaceResourceWhitelist:
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+    - group: argoproj.io
+      kind: Rollout
+    - group: argoproj.io
+      kind: AnalysisTemplate
+    - group: kyverno.io
+      kind: ClusterPolicy
+  namespaceResourceWhitelist:
     - group: "*"
       kind: "*"
 
