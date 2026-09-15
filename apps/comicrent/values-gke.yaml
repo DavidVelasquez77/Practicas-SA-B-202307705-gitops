@@ -55,7 +55,7 @@ api-gateway:
     enabled: false
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-api-gateway
-    tag: "sha-9d689571cb7f840b6d275427606395ecd8315e60"
+    tag: "v0.8.4"
     pullPolicy: Always
   service:
     type: LoadBalancer
