@@ -27,7 +27,9 @@ spec:
         - imageReferences:
             - ghcr.io/davidvelasquez77/comicrent-*:* 
           failureAction: Enforce
-          mutateDigest: true
+          # Verify the tag without rewriting live manifests; this keeps ArgoCD
+          # reconciliation deterministic while the signed digest remains checked.
+          mutateDigest: false
           attestors:
             - entries:
                 - keyless:
