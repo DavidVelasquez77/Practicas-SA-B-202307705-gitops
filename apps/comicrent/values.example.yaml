@@ -1,7 +1,9 @@
 global:
+  # Las credenciales reales nunca se colocan en values. Se publican como
+  # SealedSecret con encryptedData y ArgoCD las sincroniza al clúster.
   secrets:
-    postgresPassword: "CHANGE_ME"
-    postgresUserPassword: "CHANGE_ME"
-    rabbitmqPassword: "CHANGE_ME"
-    jwtSecret: "CHANGE_ME"
-    encryptionKey: "CHANGE_ME_64_HEX_CHARACTERS"
+    postgresPassword: ""
+    postgresUserPassword: ""
+    rabbitmqPassword: ""
+    jwtSecret: ""
+    encryptionKey: ""

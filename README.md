@@ -8,7 +8,7 @@ Repositorio declarativo de la aplicación ComicRent de la Práctica 8. ArgoCD ob
 - Chart: `apps/comicrent`
 - Promotion: 10% → 25% → 50% → 100%
 - Analysis: k6 smoke test con error 0% y p95 menor a 500 ms
-- Secrets: credenciales versionadas únicamente como `SealedSecret` con `encryptedData`
+- Secrets: credenciales versionadas únicamente como `SealedSecret` con `encryptedData`; no se versionan valores de contraseña ni templates `Secret` en texto plano
 
 La infraestructura GKE, ArgoCD, Argo Rollouts, Kyverno, Sealed Secrets, las
 políticas y el `Application` de bootstrap pertenecen a Terraform en el repositorio
