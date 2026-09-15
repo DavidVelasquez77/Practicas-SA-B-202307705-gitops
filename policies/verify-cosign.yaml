@@ -27,9 +27,9 @@ spec:
         - imageReferences:
             - ghcr.io/davidvelasquez77/comicrent-*:* 
           failureAction: Enforce
-          # Verify the tag without rewriting live manifests; this keeps ArgoCD
-          # reconciliation deterministic while the signed digest remains checked.
-          mutateDigest: false
+          # Pin admitted workloads to the verified digest. ArgoCD ignores this
+          # admission-time mutation below so Git remains the source of intent.
+          mutateDigest: true
           attestors:
             - entries:
                 - keyless:
