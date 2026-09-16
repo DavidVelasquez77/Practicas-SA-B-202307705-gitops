@@ -1,6 +1,6 @@
 replicaCount: 1
 
-deploymentRevision: "v3"
+deploymentRevision: "incident-canary-fail-20260915"
 
 
 image:

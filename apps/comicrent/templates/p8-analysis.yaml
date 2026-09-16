@@ -52,7 +52,7 @@ spec:
                     command: ["k6", "run", "/scripts/smoke.js"]
                     env:
                       - name: BASE_URL
-                        value: "http://comicrent-api-gateway-canary.{{ .Values.global.namespace }}.svc.cluster.local:3000/health"
+                        value: "http://comicrent-api-gateway-canary.{{ .Values.global.namespace }}.svc.cluster.local:3000/definitely-not-health"
                     volumeMounts:
                       - name: script
                         mountPath: /scripts
