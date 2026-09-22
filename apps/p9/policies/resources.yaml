@@ -107,7 +107,6 @@ spec:
           mutateDigest: false
           useCache: true
           verifyDigest: false
-          signatureAlgorithm: sha256
           attestors:
             - entries:
                 - keyless:
