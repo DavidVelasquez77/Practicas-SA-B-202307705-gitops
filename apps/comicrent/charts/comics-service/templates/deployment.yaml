@@ -29,6 +29,19 @@ spec:
         checksum/secret: {{ .Values.global.secrets.postgresUserPassword | sha256sum | quote }}
 
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - comics-service
+
       serviceAccountName: {{ include "comics-service.fullname" . }}
       automountServiceAccountToken: false
 

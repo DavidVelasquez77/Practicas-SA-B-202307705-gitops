@@ -28,6 +28,19 @@ spec:
         checksum/secret: {{ printf "%s|%s" .Values.global.secrets.postgresUserPassword .Values.global.secrets.rabbitmqPassword | sha256sum | quote }}
 
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - rentals-service
+
       serviceAccountName: {{ include "rentals-service.fullname" . }}
       automountServiceAccountToken: false
 

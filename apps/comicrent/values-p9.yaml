@@ -1,0 +1,111 @@
+# P9 environment: in-cluster PostgreSQL gives Velero a real persistent volume
+# whose contents can be backed up and restored after a cluster loss.
+namespace: sa-p9
+
+global:
+  environment: p9-dr
+  namespace: sa-p9
+  progressiveDelivery:
+    apiGateway:
+      enabled: true
+  security:
+    allowInsecureImages: false
+  secrets:
+    create: false
+  database:
+    existingSecret: ""
+  networkPolicy:
+    externalPostgres:
+      enabled: false
+
+postgresql:
+  enabled: true
+  namespaceOverride: sa-p9
+  fullnameOverride: comicrent-postgresql
+  architecture: standalone
+  auth:
+    enablePostgresUser: true
+    username: comicrent_user
+    database: auth_db
+    existingSecret: comicrent-postgresql-secret
+    secretKeys:
+      adminPasswordKey: postgres-password
+      userPasswordKey: password
+  primary:
+    persistence:
+      enabled: true
+      size: 2Gi
+      storageClass: standard-rwo
+
+rabbitmq:
+  namespaceOverride: sa-p9
+  fullnameOverride: comicrent-rabbitmq
+  replicaCount: 1
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: standard-rwo
+  auth:
+    username: comicrent
+    existingPasswordSecret: comicrent-rabbitmq-secret
+    existingSecretPasswordKey: rabbitmq-password
+
+api-gateway:
+  replicaCount: 3
+  autoscaling:
+    enabled: false
+  image:
+    repository: ghcr.io/davidvelasquez77/comicrent-api-gateway
+    tag: "v0.8.5"
+    pullPolicy: Always
+  service:
+    type: LoadBalancer
+    port: 3000
+
+auth-service:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/davidvelasquez77/comicrent-auth-service
+    tag: "v0.8.5"
+    pullPolicy: Always
+
+comics-service:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/davidvelasquez77/comicrent-comics-service
+    tag: "v0.8.5"
+    pullPolicy: Always
+
+rentals-service:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/davidvelasquez77/comicrent-rentals-service
+    tag: "v0.8.5"
+    pullPolicy: Always
+
+copies-service:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/davidvelasquez77/comicrent-copies-service
+    tag: "v0.8.5"
+    pullPolicy: Always
+
+copies-consumer:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/davidvelasquez77/comicrent-copies-service
+    tag: "v0.8.5"
+    pullPolicy: Always
+
+operations-jobs:
+  global:
+    namespace: sa-p9
+  image:
+    repository: ghcr.io/davidvelasquez77/comicrent-operations-jobs
+    tag: "v0.8.5"
+    pullPolicy: Always
+
+extraLabels:
+  project: comicrent
+  practice: p9
+  managedByCourse: software-avanzado

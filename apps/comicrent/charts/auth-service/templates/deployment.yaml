@@ -29,6 +29,19 @@ spec:
         checksum/secret: {{ printf "%s|%s|%s" .Values.global.secrets.postgresUserPassword .Values.global.secrets.jwtSecret .Values.global.secrets.encryptionKey | sha256sum | quote }}
 
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - auth-service
+
       serviceAccountName: {{ include "auth-service.fullname" . }}
       automountServiceAccountToken: false
 
