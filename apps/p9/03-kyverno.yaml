@@ -16,57 +16,12 @@ spec:
         backgroundController: { replicas: 1 }
         cleanupController: { replicas: 1 }
         reportsController: { replicas: 1 }
+        kyverno-api:
+          labels:
+            app.kubernetes.io/part-of: kyverno
   destination:
     server: https://kubernetes.default.svc
     namespace: kyverno
-  # Kubernetes drops empty metadata.labels maps from CRDs. The chart renders
-  # labels: {}, so ArgoCD sees a permanent diff although the live CRDs are
-  # otherwise identical. Scope the ignore to only the affected Kyverno CRDs.
-  ignoreDifferences:
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      name: deletingpolicies.policies.kyverno.io
-      jsonPointers: [/metadata/labels]
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      name: generatingpolicies.policies.kyverno.io
-      jsonPointers: [/metadata/labels]
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      name: imagevalidatingpolicies.policies.kyverno.io
-      jsonPointers: [/metadata/labels]
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      name: mutatingpolicies.policies.kyverno.io
-      jsonPointers: [/metadata/labels]
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      name: namespaceddeletingpolicies.policies.kyverno.io
-      jsonPointers: [/metadata/labels]
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      name: namespacedgeneratingpolicies.policies.kyverno.io
-      jsonPointers: [/metadata/labels]
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      name: namespacedimagevalidatingpolicies.policies.kyverno.io
-      jsonPointers: [/metadata/labels]
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      name: namespacedmutatingpolicies.policies.kyverno.io
-      jsonPointers: [/metadata/labels]
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      name: namespacedvalidatingpolicies.policies.kyverno.io
-      jsonPointers: [/metadata/labels]
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      name: policyexceptions.policies.kyverno.io
-      jsonPointers: [/metadata/labels]
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      name: validatingpolicies.policies.kyverno.io
-      jsonPointers: [/metadata/labels]
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     syncOptions: [CreateNamespace=true, ServerSideApply=true]
