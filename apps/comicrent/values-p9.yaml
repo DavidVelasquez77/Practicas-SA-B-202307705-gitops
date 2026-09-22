@@ -1,3 +1,4 @@
+p9Mode: true
 # P9 environment: in-cluster PostgreSQL gives Velero a real persistent volume
 # whose contents can be backed up and restored after a cluster loss.
 namespace: sa-p9
@@ -109,4 +110,7 @@ extraLabels:
   project: comicrent
   practice: p9
   managedByCourse: software-avanzado
+
+
+
 
