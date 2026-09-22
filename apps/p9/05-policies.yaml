@@ -1,0 +1,99 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: comicrent-disallow-latest
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: require-versioned-image
+      match: { any: [{ resources: { kinds: [Pod], namespaces: [sa-p8, sa-p9] } }] }
+      validate:
+        message: Images must use a release tag or digest, never latest.
+        foreach:
+          - list: request.object.spec.containers[]
+            deny:
+              conditions:
+                any:
+                  - key: "{{ contains(element.image, ':latest') }}"
+                    operator: Equals
+                    value: true
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: comicrent-require-nonroot
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: validate-run-as-nonroot
+      match: { any: [{ resources: { kinds: [Pod], namespaces: [sa-p8, sa-p9] } }] }
+      validate:
+        message: Workloads must run as non-root with privilege escalation disabled.
+        pattern:
+          spec:
+            securityContext: { runAsNonRoot: true }
+            containers:
+              - securityContext: { allowPrivilegeEscalation: false }
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: comicrent-require-resources
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: validate-resources
+      match: { any: [{ resources: { kinds: [Pod], namespaces: [sa-p8, sa-p9] } }] }
+      validate:
+        message: Every container must declare CPU and memory requests and limits.
+        foreach:
+          - list: request.object.spec.containers[]
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.resources.requests.cpu || '' }}"
+                    operator: Equals
+                    value: ""
+                  - key: "{{ element.resources.requests.memory || '' }}"
+                    operator: Equals
+                    value: ""
+                  - key: "{{ element.resources.limits.cpu || '' }}"
+                    operator: Equals
+                    value: ""
+                  - key: "{{ element.resources.limits.memory || '' }}"
+                    operator: Equals
+                    value: ""
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: comicrent-verify-cosign
+spec:
+  validationFailureAction: Enforce
+  background: false
+  webhookConfiguration:
+    failurePolicy: Fail
+    timeoutSeconds: 30
+  rules:
+    - name: verify-comicrent-ghcr-images
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+              namespaces: [sa-p8, sa-p9]
+      verifyImages:
+        - imageReferences:
+            - ghcr.io/davidvelasquez77/comicrent-*:*
+          failureAction: Enforce
+          mutateDigest: false
+          verifyDigest: false
+          attestors:
+            - entries:
+                - keyless:
+                    issuer: https://token.actions.githubusercontent.com
+                    subjectRegExp: 'https://github\\.com/DavidVelasquez77/Practicas-SA-B-202307705/\\.github/workflows/p8-release\\.yml@refs/tags/v[0-9]+\\.[0-9]+\\.[0-9]+'
+                    rekor:
+                      url: https://rekor.sigstore.dev

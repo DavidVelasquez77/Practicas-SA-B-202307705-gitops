@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sa-p8
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sa-p9
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: velero
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kyverno
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argo-rollouts
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: comicrent-p8-quota
+  namespace: sa-p8
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: 2Gi
+    limits.cpu: "4"
+    limits.memory: 4Gi
+    pods: "30"
+    requests.storage: 10Gi
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: comicrent-p8-limits
+  namespace: sa-p8
+spec:
+  limits:
+    - type: Container
+      default: { cpu: 500m, memory: 512Mi }
+      defaultRequest: { cpu: 50m, memory: 64Mi }
+      min: { cpu: 10m, memory: 32Mi }
+      max: { cpu: "1", memory: 1Gi }
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: comicrent-p9-quota
+  namespace: sa-p9
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 6Gi
+    limits.cpu: "8"
+    limits.memory: 12Gi
+    pods: "30"
+    requests.storage: 10Gi
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: comicrent-p9-limits
+  namespace: sa-p9
+spec:
+  limits:
+    - type: Container
+      default: { cpu: 500m, memory: 512Mi }
+      defaultRequest: { cpu: 50m, memory: 64Mi }
+      min: { cpu: 10m, memory: 32Mi }
+      max: { cpu: "1", memory: 1Gi }

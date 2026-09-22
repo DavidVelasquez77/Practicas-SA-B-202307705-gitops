@@ -1,12 +1,9 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: comicrent-p9-workloads
+  name: comicrent-p8-workloads
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "7"
-  labels:
-    app.kubernetes.io/part-of: comicrent-p9
+  annotations: { argocd.argoproj.io/sync-wave: "7" }
 spec:
   project: comicrent-p9
   source:
@@ -14,15 +11,10 @@ spec:
     targetRevision: p9-continuidad-operativa
     path: apps/comicrent
     helm:
-      valueFiles:
-        - values-p9.yaml
+      valueFiles: [values-gke.yaml]
   destination:
     server: https://kubernetes.default.svc
-    namespace: sa-p9
+    namespace: sa-p8
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=false
-      - ServerSideApply=true
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [CreateNamespace=false, ServerSideApply=true]

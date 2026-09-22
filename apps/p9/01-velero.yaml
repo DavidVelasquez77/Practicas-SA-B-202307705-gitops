@@ -1,0 +1,66 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: velero
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  labels: { app.kubernetes.io/part-of: comicrent-p9 }
+spec:
+  project: comicrent-p9
+  source:
+    repoURL: https://vmware-tanzu.github.io/helm-charts
+    chart: velero
+    targetRevision: 8.0.0
+    helm:
+      values: |
+        credentials:
+          useSecret: false
+        serviceAccount:
+          server:
+            create: true
+            name: velero
+            annotations:
+              iam.gke.io/gcp-service-account: velero-p9@comicrent-p6-2026.iam.gserviceaccount.com
+        initContainers:
+          - name: velero-plugin-for-gcp
+            image: velero/velero-plugin-for-gcp:v1.10.0
+            volumeMounts:
+              - mountPath: /target
+                name: plugins
+        configuration:
+          backupStorageLocation:
+            - name: default
+              provider: gcp
+              bucket: comicrent-p9-velero-2026-202307705
+              default: true
+              accessMode: ReadWrite
+              config:
+                serviceAccount: velero-p9@comicrent-p6-2026.iam.gserviceaccount.com
+          defaultBackupStorageLocation: default
+          defaultBackupTTL: 168h
+          features: EnableCSI
+        snapshotsEnabled: false
+        deployNodeAgent: true
+        defaultVolumesToFsBackup: true
+        upgradeCRDs: false
+        extraObjects:
+          - apiVersion: velero.io/v1
+            kind: Schedule
+            metadata:
+              name: comicrent-p9-daily
+              namespace: velero
+            spec:
+              schedule: "0 */6 * * *"
+              template:
+                ttl: 168h
+                includedNamespaces: [sa-p8, sa-p9, argocd, argo-rollouts, kube-system]
+                includeClusterResources: true
+                defaultVolumesToFsBackup: true
+                storageLocation: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: velero
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]
