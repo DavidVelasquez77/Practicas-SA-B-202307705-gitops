@@ -9,7 +9,7 @@ spec:
   project: comicrent-p9
   source:
     repoURL: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705-gitops.git
-    targetRevision: main
+    targetRevision: p9-continuidad-operativa
     path: apps/comicrent
     helm:
       valueFiles:
