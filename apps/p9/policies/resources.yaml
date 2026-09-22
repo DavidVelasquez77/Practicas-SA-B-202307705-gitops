@@ -3,12 +3,16 @@ kind: ClusterPolicy
 metadata:
   name: comicrent-disallow-latest
 spec:
+  admission: true
   validationFailureAction: Enforce
   background: true
+  emitWarning: false
   rules:
     - name: require-versioned-image
+      skipBackgroundRequests: true
       match: { any: [{ resources: { kinds: [Pod], namespaces: [sa-p8, sa-p9] } }] }
       validate:
+        allowExistingViolations: true
         message: Images must use a release tag or digest, never latest.
         foreach:
           - list: request.object.spec.containers[]
@@ -24,12 +28,16 @@ kind: ClusterPolicy
 metadata:
   name: comicrent-require-nonroot
 spec:
+  admission: true
   validationFailureAction: Enforce
   background: true
+  emitWarning: false
   rules:
     - name: validate-run-as-nonroot
+      skipBackgroundRequests: true
       match: { any: [{ resources: { kinds: [Pod], namespaces: [sa-p8, sa-p9] } }] }
       validate:
+        allowExistingViolations: true
         message: Workloads must run as non-root with privilege escalation disabled.
         pattern:
           spec:
@@ -42,12 +50,16 @@ kind: ClusterPolicy
 metadata:
   name: comicrent-require-resources
 spec:
+  admission: true
   validationFailureAction: Enforce
   background: true
+  emitWarning: false
   rules:
     - name: validate-resources
+      skipBackgroundRequests: true
       match: { any: [{ resources: { kinds: [Pod], namespaces: [sa-p8, sa-p9] } }] }
       validate:
+        allowExistingViolations: true
         message: Every container must declare CPU and memory requests and limits.
         foreach:
           - list: request.object.spec.containers[]
@@ -72,13 +84,16 @@ kind: ClusterPolicy
 metadata:
   name: comicrent-verify-cosign
 spec:
+  admission: true
   validationFailureAction: Enforce
   background: false
+  emitWarning: false
   webhookConfiguration:
     failurePolicy: Fail
     timeoutSeconds: 30
   rules:
     - name: verify-comicrent-ghcr-images
+      skipBackgroundRequests: true
       match:
         any:
           - resources:
@@ -88,8 +103,11 @@ spec:
         - imageReferences:
             - ghcr.io/davidvelasquez77/comicrent-*:*
           failureAction: Enforce
+          required: true
           mutateDigest: false
+          useCache: true
           verifyDigest: false
+          signatureAlgorithm: sha256
           attestors:
             - entries:
                 - keyless:
