@@ -13,6 +13,14 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
+  ignoreDifferences:
+    - group: kyverno.io
+      kind: ClusterPolicy
+      name: comicrent-verify-cosign
+      jsonPointers:
+        # Kyverno defaults this field in the live CRD, but it is absent from
+        # the versioned CRD schema used by Argo CD's structured diff.
+        - /spec/rules/0/verifyImages/0/signatureAlgorithm
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     syncOptions: [CreateNamespace=false, ServerSideApply=true]
