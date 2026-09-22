@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kyverno-policies
+  namespace: argocd
+  annotations: { argocd.argoproj.io/sync-wave: "5" }
+spec:
+  project: comicrent-p9
+  source:
+    repoURL: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705-gitops.git
+    targetRevision: p9-continuidad-operativa
+    path: apps/p9/policies
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [CreateNamespace=false, ServerSideApply=true]
