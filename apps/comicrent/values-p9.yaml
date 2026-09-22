@@ -48,6 +48,8 @@ rabbitmq:
   namespaceOverride: sa-p9
   fullnameOverride: comicrent-rabbitmq
   replicaCount: 1
+  service:
+    type: ClusterIP
   persistence:
     enabled: true
     size: 1Gi
