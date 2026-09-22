@@ -24,6 +24,12 @@ postgresql:
   namespaceOverride: sa-p9
   fullnameOverride: comicrent-postgresql
   architecture: standalone
+  image:
+    registry: registry-1.docker.io
+    repository: bitnami/postgresql
+    tag: "18.6.0"
+    digest: sha256:7d77a46bbf200709237318c27dec0eaeae2520e403dd18fdebde2be7a6b04993
+    pullPolicy: IfNotPresent
   auth:
     enablePostgresUser: true
     username: comicrent_user

@@ -54,7 +54,7 @@ spec:
               schedule: "0 */6 * * *"
               template:
                 ttl: 168h
-                includedNamespaces: [sa-p8, sa-p9, argocd, argo-rollouts, kube-system]
+                includedNamespaces: [sa-p9, argocd, argo-rollouts, kube-system]
                 includeClusterResources: true
                 defaultVolumesToFsBackup: true
                 storageLocation: default
