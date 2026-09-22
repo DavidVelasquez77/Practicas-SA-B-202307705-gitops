@@ -39,6 +39,10 @@ postgresql:
       adminPasswordKey: postgres-password
       userPasswordKey: password
   primary:
+    podSecurityContext:
+      enabled: true
+      runAsNonRoot: true
+      fsGroup: 1001
     persistence:
       enabled: true
       size: 2Gi
