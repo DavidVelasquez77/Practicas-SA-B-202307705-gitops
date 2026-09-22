@@ -48,6 +48,24 @@ rabbitmq:
   namespaceOverride: sa-p9
   fullnameOverride: comicrent-rabbitmq
   replicaCount: 1
+  # Kyverno requires non-root identity at pod and container level.
+  podSecurityContext:
+    enabled: true
+    runAsNonRoot: true
+    runAsUser: 1001
+    runAsGroup: 1001
+    fsGroup: 1001
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001
+    runAsGroup: 1001
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: RuntimeDefault
   service:
     type: ClusterIP
   persistence:
