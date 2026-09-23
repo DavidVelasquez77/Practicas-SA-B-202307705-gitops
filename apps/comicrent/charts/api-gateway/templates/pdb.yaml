@@ -12,5 +12,10 @@ spec:
 
   selector:
     matchLabels:
+      {{- if .Values.global.progressiveDelivery.apiGateway.enabled }}
+      app.kubernetes.io/name: api-gateway
+      app.kubernetes.io/instance: comicrent
+      {{- else }}
       {{- include "api-gateway.selectorLabels" . | nindent 6 }}
+      {{- end }}
 {{- end }}
