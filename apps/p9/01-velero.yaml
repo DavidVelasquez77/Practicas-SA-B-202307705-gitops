@@ -45,6 +45,21 @@ spec:
         defaultVolumesToFsBackup: true
         upgradeCRDs: false
         extraObjects:
+          # The restore-wait init container must use a numeric UID/GID matching
+          # PostgreSQL's volume owner; otherwise runAsNonRoot cannot validate
+          # the helper image's named user (cnb) and Kopia restore never starts.
+          - apiVersion: v1
+            kind: ConfigMap
+            metadata:
+              name: fs-restore-action-config
+              namespace: velero
+              labels:
+                velero.io/plugin-config: ""
+                velero.io/pod-volume-restore: RestoreItemAction
+            data:
+              secCtxRunAsUser: "1001"
+              secCtxRunAsGroup: "1001"
+              secCtxAllowPrivilegeEscalation: "false"
           - apiVersion: velero.io/v1
             kind: Schedule
             metadata:
