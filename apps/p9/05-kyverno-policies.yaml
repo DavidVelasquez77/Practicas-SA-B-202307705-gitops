@@ -8,7 +8,7 @@ spec:
   project: comicrent-p9
   source:
     repoURL: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705-gitops.git
-    targetRevision: p9-continuidad-operativa
+    targetRevision: main
     path: apps/p9/policies
   destination:
     server: https://kubernetes.default.svc
