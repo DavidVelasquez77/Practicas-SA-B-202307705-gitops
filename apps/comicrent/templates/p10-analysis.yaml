@@ -28,7 +28,8 @@ spec:
     - name: candidate-error-ratio
       initialDelay: 90s
       failureLimit: 0
-      successCondition: result[0] <= 0.01
+      # Availability SLO 99.9%: permit at most 0.1% server errors/timeouts.
+      successCondition: result[0] <= 0.001
       provider:
         prometheus:
           address: http://p10-observability-kube-pro-prometheus.observability.svc.cluster.local:9090
