@@ -12,7 +12,7 @@ spec:
     - name: rollout-hash
   metrics:
     - name: candidate-request-volume
-      initialDelay: 45s
+      initialDelay: 90s
       failureLimit: 0
       successCondition: result[0] >= 5
       provider:
@@ -26,7 +26,7 @@ spec:
               rollouts_pod_template_hash="{{ "{{args.rollout-hash}}" }}"
             }) or vector(0)
     - name: candidate-error-ratio
-      initialDelay: 45s
+      initialDelay: 90s
       failureLimit: 0
       successCondition: result[0] <= 0.01
       provider:
@@ -49,7 +49,7 @@ spec:
               }), 1)
             ) or vector(0)
     - name: candidate-p95-latency
-      initialDelay: 45s
+      initialDelay: 90s
       failureLimit: 0
       successCondition: result[0] <= 0.5
       provider:

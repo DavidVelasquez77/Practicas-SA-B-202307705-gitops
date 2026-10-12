@@ -87,7 +87,7 @@ rabbitmq:
 
 api-gateway:
   replicaCount: 3
-  deploymentRevision: "p10-prometheus-analysis-3"
+  deploymentRevision: "p10-prometheus-analysis-4"
   autoscaling:
     enabled: false
   image:
