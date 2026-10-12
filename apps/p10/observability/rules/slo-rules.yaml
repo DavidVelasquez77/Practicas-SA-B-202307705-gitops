@@ -1,0 +1,167 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: comicrent-slo-rules
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: comicrent-p10
+    release: p10-observability
+spec:
+  groups:
+    - name: comicrent.slo.recording
+      interval: 15s
+      rules:
+        # Availability SLO: 99.9% successful user requests over 30 days.
+        - record: comicrent:slo:availability:good_ratio_30d
+          expr: |
+            1 - (
+              (sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",status_class=~"5xx|timeout"}[30d])) or vector(0))
+              /
+              sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[30d]))
+            )
+        - record: comicrent:slo:availability:budget_consumed_ratio_30d
+          expr: |
+            (
+              (sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",status_class=~"5xx|timeout"}[30d])) or vector(0))
+              /
+              (sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[30d])) * 0.001)
+            )
+            and on() (sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[30d])) > 0)
+        - record: comicrent:slo:availability:burn_rate_5m
+          expr: |
+            (
+              (sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",status_class=~"5xx|timeout"}[5m])) or vector(0))
+              /
+              sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[5m]))
+            ) / 0.001
+        - record: comicrent:slo:availability:burn_rate_30m
+          expr: |
+            (
+              (sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",status_class=~"5xx|timeout"}[30m])) or vector(0))
+              /
+              sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[30m]))
+            ) / 0.001
+        - record: comicrent:slo:availability:burn_rate_1h
+          expr: |
+            (
+              (sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",status_class=~"5xx|timeout"}[1h])) or vector(0))
+              /
+              sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[1h]))
+            ) / 0.001
+        - record: comicrent:slo:availability:burn_rate_6h
+          expr: |
+            (
+              (sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",status_class=~"5xx|timeout"}[6h])) or vector(0))
+              /
+              sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[6h]))
+            ) / 0.001
+
+        # Latency SLO: 95% of user requests complete within 500 ms over 30 days.
+        - record: comicrent:slo:latency:good_ratio_30d
+          expr: |
+            sum(increase(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",le="0.5"}[30d]))
+            /
+            sum(increase(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[30d]))
+        - record: comicrent:slo:latency:budget_consumed_ratio_30d
+          expr: |
+            (
+              (
+                sum(increase(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[30d]))
+                -
+                sum(increase(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",le="0.5"}[30d]))
+              )
+              /
+              (sum(increase(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[30d])) * 0.05)
+            )
+            and on() (sum(increase(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[30d])) > 0)
+        - record: comicrent:slo:latency:burn_rate_5m
+          expr: |
+            (
+              (
+                sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[5m]))
+                -
+                sum(rate(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",le="0.5"}[5m]))
+              )
+              /
+              sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[5m]))
+            ) / 0.05
+        - record: comicrent:slo:latency:burn_rate_30m
+          expr: |
+            (
+              (
+                sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[30m]))
+                -
+                sum(rate(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",le="0.5"}[30m]))
+              )
+              /
+              sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[30m]))
+            ) / 0.05
+        - record: comicrent:slo:latency:burn_rate_1h
+          expr: |
+            (
+              (
+                sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[1h]))
+                -
+                sum(rate(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",le="0.5"}[1h]))
+              )
+              /
+              sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[1h]))
+            ) / 0.05
+        - record: comicrent:slo:latency:burn_rate_6h
+          expr: |
+            (
+              (
+                sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[6h]))
+                -
+                sum(rate(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",le="0.5"}[6h]))
+              )
+              /
+              sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[6h]))
+            ) / 0.05
+
+    - name: comicrent.slo.alerts
+      rules:
+        - alert: ComicRentAvailabilityBudgetFastBurn
+          expr: comicrent:slo:availability:burn_rate_5m > 14.4 and on() comicrent:slo:availability:burn_rate_1h > 14.4
+          for: 2m
+          labels:
+            severity: critical
+            slo: availability
+            team: comicrent
+          annotations:
+            summary: ComicRent is rapidly consuming its availability error budget.
+            description: The api-gateway has burned budget above 14.4x in both the 5-minute and 1-hour windows. Check 5xx and timeout requests by route, then follow the trace and log correlation before mitigating the responsible release or dependency.
+            runbook_url: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705/blob/feature/p10-instrumentation/P10/runbooks/availability-error-budget.md
+        - alert: ComicRentAvailabilityBudgetSlowBurn
+          expr: comicrent:slo:availability:burn_rate_30m > 6 and on() comicrent:slo:availability:burn_rate_6h > 6
+          for: 5m
+          labels:
+            severity: warning
+            slo: availability
+            team: comicrent
+          annotations:
+            summary: ComicRent is steadily consuming its availability error budget.
+            description: The api-gateway has burned budget above 6x in both the 30-minute and 6-hour windows. Investigate during the current operational shift and avoid promoting a candidate while the burn continues.
+            runbook_url: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705/blob/feature/p10-instrumentation/P10/runbooks/availability-error-budget.md
+        - alert: ComicRentLatencyBudgetFastBurn
+          expr: comicrent:slo:latency:burn_rate_5m > 14.4 and on() comicrent:slo:latency:burn_rate_1h > 14.4
+          for: 2m
+          labels:
+            severity: critical
+            slo: latency
+            team: comicrent
+          annotations:
+            summary: ComicRent is rapidly consuming its latency error budget.
+            description: More than the allowed fraction of api-gateway requests exceed 500 ms, at a burn rate above 14.4x in both the 5-minute and 1-hour windows. Locate the slow span and correlated log, then mitigate the responsible service or dependency.
+            runbook_url: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705/blob/feature/p10-instrumentation/P10/runbooks/latency-error-budget.md
+        - alert: ComicRentLatencyBudgetSlowBurn
+          expr: comicrent:slo:latency:burn_rate_30m > 6 and on() comicrent:slo:latency:burn_rate_6h > 6
+          for: 5m
+          labels:
+            severity: warning
+            slo: latency
+            team: comicrent
+          annotations:
+            summary: ComicRent is steadily consuming its latency error budget.
+            description: The fraction of api-gateway requests exceeding 500 ms is burning budget above 6x in both the 30-minute and 6-hour windows. Investigate during the current operational shift and avoid promoting a candidate while the burn continues.
+            runbook_url: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705/blob/feature/p10-instrumentation/P10/runbooks/latency-error-budget.md

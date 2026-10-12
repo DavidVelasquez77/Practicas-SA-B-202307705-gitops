@@ -9,6 +9,7 @@ resources:
   - applications/tempo.yaml
   - applications/otel-collector.yaml
   - applications/alloy.yaml
+  - rules/slo-rules.yaml
 configMapGenerator:
   - name: comicrent-operations-dashboard
     namespace: observability
