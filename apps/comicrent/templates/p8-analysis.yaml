@@ -1,4 +1,5 @@
-{{- if .Values.global.progressiveDelivery.apiGateway.enabled }}
+{{- $observability := (dig "observability" "enabled" false (default dict .Values.global)) }}
+{{- if and .Values.global.progressiveDelivery.apiGateway.enabled (not $observability) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

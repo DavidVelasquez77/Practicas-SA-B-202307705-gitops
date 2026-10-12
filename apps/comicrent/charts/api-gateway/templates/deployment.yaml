@@ -20,24 +20,48 @@ spec:
         - setWeight: 10
         - analysis:
             templates:
-              - templateName: api-gateway-smoke
+              - templateName: {{ ternary "api-gateway-metrics" "api-gateway-smoke" (dig "observability" "enabled" false (default dict .Values.global)) }}
+            {{- if (dig "observability" "enabled" false (default dict .Values.global)) }}
+            args:
+              - name: rollout-hash
+                valueFrom:
+                  podTemplateHashValue: Latest
+            {{- end }}
         - pause:
             duration: 30s
         - setWeight: 25
         - analysis:
             templates:
-              - templateName: api-gateway-smoke
+              - templateName: {{ ternary "api-gateway-metrics" "api-gateway-smoke" (dig "observability" "enabled" false (default dict .Values.global)) }}
+            {{- if (dig "observability" "enabled" false (default dict .Values.global)) }}
+            args:
+              - name: rollout-hash
+                valueFrom:
+                  podTemplateHashValue: Latest
+            {{- end }}
         - pause:
             duration: 30s
         - setWeight: 50
         - analysis:
             templates:
-              - templateName: api-gateway-smoke
+              - templateName: {{ ternary "api-gateway-metrics" "api-gateway-smoke" (dig "observability" "enabled" false (default dict .Values.global)) }}
+            {{- if (dig "observability" "enabled" false (default dict .Values.global)) }}
+            args:
+              - name: rollout-hash
+                valueFrom:
+                  podTemplateHashValue: Latest
+            {{- end }}
         - setWeight: 100
         # Verificación final con todo el tráfico antes de cerrar la promoción.
         - analysis:
             templates:
-              - templateName: api-gateway-smoke
+              - templateName: {{ ternary "api-gateway-metrics" "api-gateway-smoke" (dig "observability" "enabled" false (default dict .Values.global)) }}
+            {{- if (dig "observability" "enabled" false (default dict .Values.global)) }}
+            args:
+              - name: rollout-hash
+                valueFrom:
+                  podTemplateHashValue: Latest
+            {{- end }}
   {{- else }}
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
