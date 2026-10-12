@@ -24,11 +24,11 @@ spec:
         - /spec/selector
   source:
     repoURL: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705-gitops.git
-    targetRevision: main
+    targetRevision: feature/p10-observability
     path: apps/comicrent
     helm:
       valueFiles:
-        - values-p9.yaml
+        - values-p10.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: sa-p9
