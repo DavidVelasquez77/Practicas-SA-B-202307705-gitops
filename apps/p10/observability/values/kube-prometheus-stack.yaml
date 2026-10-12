@@ -100,23 +100,26 @@ prometheus:
       matchLabels:
         release: p10-observability
     serviceMonitorNamespaceSelector:
-      matchNames:
-        - observability
+      matchLabels:
+        kubernetes.io/metadata.name: observability
     podMonitorSelectorNilUsesHelmValues: false
     podMonitorSelector:
       matchLabels:
         app.kubernetes.io/part-of: comicrent-p10
     podMonitorNamespaceSelector:
-      matchNames:
-        - observability
-        - sa-p9
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: In
+          values:
+            - observability
+            - sa-p9
     ruleSelectorNilUsesHelmValues: false
     ruleSelector:
       matchLabels:
         release: p10-observability
     ruleNamespaceSelector:
-      matchNames:
-        - observability
+      matchLabels:
+        kubernetes.io/metadata.name: observability
     resources:
       requests:
         cpu: 200m
