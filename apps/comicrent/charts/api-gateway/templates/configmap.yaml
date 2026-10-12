@@ -7,8 +7,8 @@ metadata:
     {{- include "api-gateway.labels" . | nindent 4 }}
 data:
   PORT: "3000"
-  AUTH_SERVICE_URL: "http://comicrent-auth-service:3001"
-  COMICS_SERVICE_URL: "http://comicrent-comics-service:3002/graphql"
-  RENTALS_SERVICE_URL: "http://comicrent-rentals-service:8001/graphql"
-  COPIES_SERVICE_URL: "http://comicrent-copies-service:8002"
+  AUTH_SERVICE_URL: {{ .Values.config.authServiceUrl | default "http://comicrent-auth-service:3001" | quote }}
+  COMICS_SERVICE_URL: {{ .Values.config.comicsServiceUrl | default "http://comicrent-comics-service:3002/graphql" | quote }}
+  RENTALS_SERVICE_URL: {{ .Values.config.rentalsServiceUrl | default "http://comicrent-rentals-service:8001/graphql" | quote }}
+  COPIES_SERVICE_URL: {{ .Values.config.copiesServiceUrl | default "http://comicrent-copies-service:8002" | quote }}
   LOG_LEVEL: {{ .Values.config.logLevel | default "info" | quote }}
