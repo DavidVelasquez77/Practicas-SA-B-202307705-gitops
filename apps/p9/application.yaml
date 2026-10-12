@@ -9,6 +9,19 @@ metadata:
     app.kubernetes.io/part-of: comicrent-p9
 spec:
   project: comicrent-p9
+  ignoreDifferences:
+    - group: ""
+      kind: Service
+      name: comicrent-api-gateway-canary
+      namespace: sa-p9
+      jsonPointers:
+        - /spec/selector
+    - group: ""
+      kind: Service
+      name: comicrent-p9-workloads-api-gateway
+      namespace: sa-p9
+      jsonPointers:
+        - /spec/selector
   source:
     repoURL: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705-gitops.git
     targetRevision: main
@@ -26,3 +39,4 @@ spec:
     syncOptions:
       - CreateNamespace=false
       - ServerSideApply=true
+      - RespectIgnoreDifferences=true
