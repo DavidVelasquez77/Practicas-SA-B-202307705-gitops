@@ -12,7 +12,7 @@ spec:
     - name: rollout-hash
   metrics:
     - name: candidate-request-volume
-      initialDelay: 60s
+      initialDelay: 45s
       failureLimit: 0
       successCondition: result[0] >= 5
       provider:
@@ -20,13 +20,13 @@ spec:
           address: http://p10-observability-kube-pro-prometheus.observability.svc.cluster.local:9090
           timeout: 10
           query: |
-            sum(increase(comicrent_http_requests_total{
+            sum(comicrent_http_requests_total{
               namespace="{{ .Values.global.namespace }}",
               service="api-gateway",
               rollouts_pod_template_hash="{{ "{{args.rollout-hash}}" }}"
-            }[2m])) or vector(0)
+            }) or vector(0)
     - name: candidate-error-ratio
-      initialDelay: 60s
+      initialDelay: 45s
       failureLimit: 0
       successCondition: result[0] <= 0.01
       provider:
@@ -35,21 +35,21 @@ spec:
           timeout: 10
           query: |
             (
-              sum(increase(comicrent_http_requests_total{
+              sum(comicrent_http_requests_total{
                 namespace="{{ .Values.global.namespace }}",
                 service="api-gateway",
                 rollouts_pod_template_hash="{{ "{{args.rollout-hash}}" }}",
                 status_class=~"5xx|timeout"
-              }[2m]))
+              })
               /
-              clamp_min(sum(increase(comicrent_http_requests_total{
+              clamp_min(sum(comicrent_http_requests_total{
                 namespace="{{ .Values.global.namespace }}",
                 service="api-gateway",
                 rollouts_pod_template_hash="{{ "{{args.rollout-hash}}" }}"
-              }[2m])), 1)
+              }), 1)
             ) or vector(0)
     - name: candidate-p95-latency
-      initialDelay: 60s
+      initialDelay: 45s
       failureLimit: 0
       successCondition: result[0] <= 0.5
       provider:
@@ -58,10 +58,10 @@ spec:
           timeout: 10
           query: |
             histogram_quantile(0.95,
-              sum by (le) (increase(comicrent_http_request_duration_seconds_bucket{
+              sum by (le) (comicrent_http_request_duration_seconds_bucket{
                 namespace="{{ .Values.global.namespace }}",
                 service="api-gateway",
                 rollouts_pod_template_hash="{{ "{{args.rollout-hash}}" }}"
-              }[2m]))
+              })
             ) or vector(0)
 {{- end }}
