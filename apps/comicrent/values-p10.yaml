@@ -89,7 +89,7 @@ api-gateway:
   replicaCount: 3
   deploymentRevision: "p10-prometheus-analysis-5"
   config:
-    authServiceUrl: "http://auth-backend.p10.invalid:3001"
+    authServiceUrl: "http://comicrent-p9-workloads-auth-service:3001"
     comicsServiceUrl: "http://comicrent-p9-workloads-comics-service:3002/graphql"
     rentalsServiceUrl: "http://comicrent-p9-workloads-rentals-service:8001/graphql"
     copiesServiceUrl: "http://comicrent-p9-workloads-copies-service:8002"

@@ -12,8 +12,7 @@ spec:
     - name: rollout-hash
   metrics:
     - name: candidate-request-volume
-      # Temporary test delay lets the existing 2-minute SLO alert fire before rollback.
-      initialDelay: 210s
+      initialDelay: 90s
       failureLimit: 0
       # Require enough recent candidate requests for a useful error ratio and p95.
       successCondition: result[0] >= 20
@@ -28,7 +27,7 @@ spec:
               rollouts_pod_template_hash="{{ "{{args.rollout-hash}}" }}"
             }[5m])) or vector(0)
     - name: candidate-error-ratio
-      initialDelay: 210s
+      initialDelay: 90s
       failureLimit: 0
       # Availability SLO 99.9%: permit at most 0.1% server errors/timeouts.
       successCondition: result[0] <= 0.001
@@ -52,7 +51,7 @@ spec:
               }[5m])), 1)
             ) or vector(0)
     - name: candidate-p95-latency
-      initialDelay: 210s
+      initialDelay: 90s
       failureLimit: 0
       successCondition: result[0] <= 0.5
       provider:
