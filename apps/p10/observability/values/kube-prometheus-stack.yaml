@@ -9,6 +9,10 @@ kubeScheduler:
   enabled: false
 kubeProxy:
   enabled: false
+coreDns:
+  enabled: false
+kubeDns:
+  enabled: false
 nodeExporter:
   enabled: false
 
@@ -131,6 +135,8 @@ prometheus:
               storage: 8Gi
 
 prometheusOperator:
+  admissionWebhooks:
+    enabled: false
   resources:
     requests:
       cpu: 50m
