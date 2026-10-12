@@ -138,6 +138,8 @@ prometheus:
               storage: 8Gi
 
 prometheusOperator:
+  tls:
+    enabled: false
   admissionWebhooks:
     enabled: false
   resources:
