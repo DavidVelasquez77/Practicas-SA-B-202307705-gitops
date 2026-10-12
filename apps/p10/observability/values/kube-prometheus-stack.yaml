@@ -1,0 +1,149 @@
+defaultRules:
+  create: false
+
+kubeEtcd:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+nodeExporter:
+  enabled: false
+
+grafana:
+  enabled: true
+  defaultDashboardsEnabled: false
+  admin:
+    existingSecret: p10-grafana-admin
+    userKey: admin-user
+    passwordKey: admin-password
+  resources:
+    requests:
+      cpu: 100m
+      memory: 192Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      searchNamespace: ALL
+      provider:
+        allowUiUpdates: false
+    datasources:
+      enabled: true
+  additionalDataSources:
+    - name: Loki
+      uid: loki
+      type: loki
+      access: proxy
+      url: http://p10-loki.observability.svc.cluster.local:3100
+      isDefault: false
+      jsonData:
+        maxLines: 1000
+        derivedFields:
+          - name: TraceID
+            matcherRegex: '"trace_id":"([a-f0-9]{32})"'
+            datasourceUid: tempo
+            url: '$${__value.raw}'
+            urlDisplayLabel: Abrir traza
+    - name: Tempo
+      uid: tempo
+      type: tempo
+      access: proxy
+      url: http://p10-tempo.observability.svc.cluster.local:3200
+      isDefault: false
+      jsonData:
+        nodeGraph:
+          enabled: true
+        tracesToLogsV2:
+          datasourceUid: loki
+          spanStartTimeShift: -2m
+          spanEndTimeShift: 2m
+          tags:
+            - key: service.name
+              value: service_name
+          filterByTraceID: true
+          filterBySpanID: false
+          customQuery: false
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 25m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
+prometheus:
+  enabled: true
+  prometheusSpec:
+    replicas: 1
+    scrapeInterval: 15s
+    evaluationInterval: 15s
+    retention: 7d
+    retentionSize: 6GB
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector:
+      matchLabels:
+        release: p10-observability
+    serviceMonitorNamespaceSelector:
+      matchNames:
+        - observability
+    podMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelector:
+      matchLabels:
+        app.kubernetes.io/part-of: comicrent-p10
+    podMonitorNamespaceSelector:
+      matchNames:
+        - observability
+        - sa-p9
+    ruleSelectorNilUsesHelmValues: false
+    ruleSelector:
+      matchLabels:
+        release: p10-observability
+    ruleNamespaceSelector:
+      matchNames:
+        - observability
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1536Mi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: standard-rwo
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 8Gi
+
+prometheusOperator:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 384Mi
+
+kube-state-metrics:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi

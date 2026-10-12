@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: comicrent-p10
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  description: Observability and SRE controls for ComicRent Practice 10
+  sourceRepos:
+    - https://github.com/DavidVelasquez77/Practicas-SA-B-202307705-gitops.git
+    - https://prometheus-community.github.io/helm-charts
+    - https://grafana.github.io/helm-charts
+    - https://open-telemetry.github.io/opentelemetry-helm-charts
+  destinations:
+    - namespace: observability
+      server: https://kubernetes.default.svc
+    - namespace: sa-p9
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: p10-telemetry
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  project: comicrent-p10
+  source:
+    repoURL: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705-gitops.git
+    targetRevision: feature/p10-observability
+    path: apps/p10/telemetry
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sa-p9
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=false

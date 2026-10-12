@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: p10-otel-collector
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: comicrent-p10
+  sources:
+    - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+      chart: opentelemetry-collector
+      targetRevision: 0.175.1
+      helm:
+        releaseName: p10-otel-collector
+        valueFiles:
+          - $values/apps/p10/observability/values/otel-collector.yaml
+    - repoURL: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705-gitops.git
+      targetRevision: feature/p10-observability
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

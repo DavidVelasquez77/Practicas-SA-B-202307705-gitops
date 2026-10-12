@@ -23,6 +23,10 @@ spec:
     metadata:
       labels:
         {{- include "rentals-service.selectorLabels" . | nindent 8 }}
+        {{- if (dig "observability" "enabled" false (default dict .Values.global)) }}
+        app.kubernetes.io/part-of: comicrent
+        observability: p10
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ printf "%s|%s" .Values.global.secrets.postgresUserPassword .Values.global.secrets.rabbitmqPassword | sha256sum | quote }}
@@ -69,12 +73,27 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if (dig "observability" "enabled" false (default dict .Values.global)) }}
+            - name: metrics
+              containerPort: {{ .Values.global.observability.metricsPort | default 9464 }}
+              protocol: TCP
+            {{- end }}
 
           envFrom:
             - configMapRef:
                 name: {{ include "rentals-service.fullname" . }}-config
 
           env:
+            {{- if (dig "observability" "enabled" false (default dict .Values.global)) }}
+            - name: OTEL_SERVICE_NAME
+              value: rentals-service
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.global.observability.otlpEndpoint | quote }}
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "k8s.namespace.name={{ .Values.global.namespace }}"
+            - name: METRICS_PORT
+              value: {{ .Values.global.observability.metricsPort | default 9464 | quote }}
+            {{- end }}
 {{ if .Values.global.database.existingSecret }}
             - name: DATABASE_URL
               valueFrom:

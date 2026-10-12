@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: comicrent-p10-services
+  namespace: sa-p9
+  labels:
+    app.kubernetes.io/part-of: comicrent-p10
+    app.kubernetes.io/component: metrics
+spec:
+  namespaceSelector:
+    matchNames:
+      - sa-p9
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: comicrent
+      observability: p10
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics
+      interval: 15s
+      scrapeTimeout: 10s
+  podTargetLabels:
+    - app.kubernetes.io/name
+    - rollouts-pod-template-hash

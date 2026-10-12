@@ -68,6 +68,9 @@ spec:
         {{- else }}
         {{- include "api-gateway.selectorLabels" . | nindent 8 }}
         {{- end }}
+        {{- if (dig "observability" "enabled" false (default dict .Values.global)) }}
+        observability: p10
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         comicrent/revision: {{ .Values.deploymentRevision | quote }}
@@ -108,6 +111,22 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if (dig "observability" "enabled" false (default dict .Values.global)) }}
+            - name: metrics
+              containerPort: {{ .Values.global.observability.metricsPort | default 9464 }}
+              protocol: TCP
+            {{- end }}
+          {{- if (dig "observability" "enabled" false (default dict .Values.global)) }}
+          env:
+            - name: OTEL_SERVICE_NAME
+              value: api-gateway
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.global.observability.otlpEndpoint | quote }}
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "k8s.namespace.name={{ .Values.global.namespace }}"
+            - name: METRICS_PORT
+              value: {{ .Values.global.observability.metricsPort | default 9464 | quote }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "api-gateway.fullname" . }}-config
