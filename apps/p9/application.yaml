@@ -24,7 +24,7 @@ spec:
         - /spec/selector
   source:
     repoURL: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705-gitops.git
-    targetRevision: feature/p10-observability
+    targetRevision: main
     path: apps/comicrent
     helm:
       valueFiles:
