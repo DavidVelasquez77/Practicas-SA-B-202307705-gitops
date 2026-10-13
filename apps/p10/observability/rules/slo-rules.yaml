@@ -15,108 +15,108 @@ spec:
         - record: comicrent:slo:availability:good_ratio_30d
           expr: |
             1 - (
-              (sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",status_class=~"5xx|timeout"}[30d])) or vector(0))
+              (sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user",status_class=~"5xx|timeout"}[30d])) or vector(0))
               /
-              sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[30d]))
+              sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user"}[30d]))
             )
         - record: comicrent:slo:availability:budget_consumed_ratio_30d
           expr: |
             (
-              (sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",status_class=~"5xx|timeout"}[30d])) or vector(0))
+              (sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user",status_class=~"5xx|timeout"}[30d])) or vector(0))
               /
-              (sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[30d])) * 0.001)
+              (sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user"}[30d])) * 0.001)
             )
-            and on() (sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[30d])) > 0)
+            and on() (sum(increase(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user"}[30d])) > 0)
         - record: comicrent:slo:availability:burn_rate_5m
           expr: |
             (
-              (sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",status_class=~"5xx|timeout"}[5m])) or vector(0))
+              (sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user",status_class=~"5xx|timeout"}[5m])) or vector(0))
               /
-              sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[5m]))
+              sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user"}[5m]))
             ) / 0.001
         - record: comicrent:slo:availability:burn_rate_30m
           expr: |
             (
-              (sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",status_class=~"5xx|timeout"}[30m])) or vector(0))
+              (sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user",status_class=~"5xx|timeout"}[30m])) or vector(0))
               /
-              sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[30m]))
+              sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user"}[30m]))
             ) / 0.001
         - record: comicrent:slo:availability:burn_rate_1h
           expr: |
             (
-              (sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",status_class=~"5xx|timeout"}[1h])) or vector(0))
+              (sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user",status_class=~"5xx|timeout"}[1h])) or vector(0))
               /
-              sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[1h]))
+              sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user"}[1h]))
             ) / 0.001
         - record: comicrent:slo:availability:burn_rate_6h
           expr: |
             (
-              (sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",status_class=~"5xx|timeout"}[6h])) or vector(0))
+              (sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user",status_class=~"5xx|timeout"}[6h])) or vector(0))
               /
-              sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway"}[6h]))
+              sum(rate(comicrent_http_requests_total{namespace="sa-p9",service="api-gateway",traffic_source="user"}[6h]))
             ) / 0.001
 
         # Latency SLO: 95% of user requests complete within 500 ms over 30 days.
         - record: comicrent:slo:latency:good_ratio_30d
           expr: |
-            sum(increase(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",le="0.5"}[30d]))
+            sum(increase(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",traffic_source="user",le="0.5"}[30d]))
             /
-            sum(increase(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[30d]))
+            sum(increase(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway",traffic_source="user"}[30d]))
         - record: comicrent:slo:latency:budget_consumed_ratio_30d
           expr: |
             (
               (
-                sum(increase(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[30d]))
+                sum(increase(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway",traffic_source="user"}[30d]))
                 -
-                sum(increase(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",le="0.5"}[30d]))
+                sum(increase(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",traffic_source="user",le="0.5"}[30d]))
               )
               /
-              (sum(increase(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[30d])) * 0.05)
+              (sum(increase(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway",traffic_source="user"}[30d])) * 0.05)
             )
-            and on() (sum(increase(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[30d])) > 0)
+            and on() (sum(increase(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway",traffic_source="user"}[30d])) > 0)
         - record: comicrent:slo:latency:burn_rate_5m
           expr: |
             (
               (
-                sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[5m]))
+                sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway",traffic_source="user"}[5m]))
                 -
-                sum(rate(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",le="0.5"}[5m]))
+                sum(rate(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",traffic_source="user",le="0.5"}[5m]))
               )
               /
-              sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[5m]))
+              sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway",traffic_source="user"}[5m]))
             ) / 0.05
         - record: comicrent:slo:latency:burn_rate_30m
           expr: |
             (
               (
-                sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[30m]))
+                sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway",traffic_source="user"}[30m]))
                 -
-                sum(rate(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",le="0.5"}[30m]))
+                sum(rate(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",traffic_source="user",le="0.5"}[30m]))
               )
               /
-              sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[30m]))
+              sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway",traffic_source="user"}[30m]))
             ) / 0.05
         - record: comicrent:slo:latency:burn_rate_1h
           expr: |
             (
               (
-                sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[1h]))
+                sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway",traffic_source="user"}[1h]))
                 -
-                sum(rate(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",le="0.5"}[1h]))
+                sum(rate(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",traffic_source="user",le="0.5"}[1h]))
               )
               /
-              sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[1h]))
+              sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway",traffic_source="user"}[1h]))
             ) / 0.05
         - record: comicrent:slo:latency:burn_rate_6h
           expr: |
             (
               (
-                sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[6h]))
+                sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway",traffic_source="user"}[6h]))
                 -
-                sum(rate(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",le="0.5"}[6h]))
+                sum(rate(comicrent_http_request_duration_seconds_bucket{namespace="sa-p9",service="api-gateway",traffic_source="user",le="0.5"}[6h]))
               )
               /
-              sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway"}[6h]))
+              sum(rate(comicrent_http_request_duration_seconds_count{namespace="sa-p9",service="api-gateway",traffic_source="user"}[6h]))
             ) / 0.05
 
     - name: comicrent.slo.alerts

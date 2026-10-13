@@ -93,8 +93,10 @@ prometheus:
     replicas: 1
     scrapeInterval: 15s
     evaluationInterval: 15s
-    retention: 7d
-    retentionSize: 6GB
+    # Keep more than the SLO's full 30-day window. Capacity is sized from
+    # the measured ingestion rate (~5,300 samples/s) with disk headroom.
+    retention: 31d
+    retentionSize: 36GB
     serviceMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelector:
       matchLabels:
@@ -135,7 +137,7 @@ prometheus:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 8Gi
+              storage: 40Gi
 
 prometheusOperator:
   tls:
