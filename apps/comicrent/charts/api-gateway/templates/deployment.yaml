@@ -14,8 +14,10 @@ spec:
   revisionHistoryLimit: 3
   strategy:
     canary:
+      {{- if not (dig "observability" "enabled" false (default dict .Values.global)) }}
       stableService: {{ include "api-gateway.fullname" . }}
       canaryService: comicrent-api-gateway-canary
+      {{- end }}
       steps:
         - setWeight: 10
         - analysis:

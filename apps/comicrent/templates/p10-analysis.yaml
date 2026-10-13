@@ -24,6 +24,7 @@ spec:
             sum(increase(comicrent_http_requests_total{
               namespace="{{ .Values.global.namespace }}",
               service="api-gateway",
+              traffic_source="user",
               rollouts_pod_template_hash="{{ "{{args.rollout-hash}}" }}"
             }[5m])) or vector(0)
     - name: candidate-error-ratio
@@ -40,6 +41,7 @@ spec:
               sum(increase(comicrent_http_requests_total{
                 namespace="{{ .Values.global.namespace }}",
                 service="api-gateway",
+                traffic_source="user",
                 rollouts_pod_template_hash="{{ "{{args.rollout-hash}}" }}",
                 status_class=~"5xx|timeout"
               }[5m]))
@@ -47,6 +49,7 @@ spec:
               clamp_min(sum(increase(comicrent_http_requests_total{
                 namespace="{{ .Values.global.namespace }}",
                 service="api-gateway",
+                traffic_source="user",
                 rollouts_pod_template_hash="{{ "{{args.rollout-hash}}" }}"
               }[5m])), 1)
             ) or vector(0)
@@ -63,6 +66,7 @@ spec:
               sum by (le) (rate(comicrent_http_request_duration_seconds_bucket{
                 namespace="{{ .Values.global.namespace }}",
                 service="api-gateway",
+                traffic_source="user",
                 rollouts_pod_template_hash="{{ "{{args.rollout-hash}}" }}"
               }[5m]))
             ) or vector(0)
