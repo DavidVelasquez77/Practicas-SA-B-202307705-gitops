@@ -87,7 +87,7 @@ rabbitmq:
 
 api-gateway:
   replicaCount: 3
-  deploymentRevision: "p10-prometheus-analysis-5"
+  deploymentRevision: "p10-observability-v0.9.2-verified"
   config:
     authServiceUrl: "http://comicrent-p9-workloads-auth-service:3001"
     comicsServiceUrl: "http://comicrent-p9-workloads-comics-service:3002/graphql"
