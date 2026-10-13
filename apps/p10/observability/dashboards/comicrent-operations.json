@@ -110,7 +110,9 @@
         {
           "expr": "comicrent:slo:availability:good_ratio_30d",
           "legendFormat": "Disponibilidad",
-          "refId": "A"
+          "refId": "A",
+          "instant": true,
+          "range": false
         }
       ]
     },
@@ -170,7 +172,9 @@
         {
           "expr": "comicrent:slo:latency:good_ratio_30d",
           "legendFormat": "Latencia ≤500 ms",
-          "refId": "A"
+          "refId": "A",
+          "instant": true,
+          "range": false
         }
       ]
     },
@@ -234,7 +238,9 @@
         {
           "expr": "comicrent:slo:availability:budget_consumed_ratio_30d",
           "legendFormat": "Budget · errores",
-          "refId": "A"
+          "refId": "A",
+          "instant": true,
+          "range": false
         }
       ]
     },
@@ -298,7 +304,9 @@
         {
           "expr": "comicrent:slo:latency:budget_consumed_ratio_30d",
           "legendFormat": "Budget · lentitud",
-          "refId": "A"
+          "refId": "A",
+          "instant": true,
+          "range": false
         }
       ]
     },
@@ -697,7 +705,9 @@
         {
           "expr": "sum(increase(comicrent_rentals_created_total{namespace=\"sa-p9\"}[24h])) or vector(0)",
           "legendFormat": "Rentas creadas · 24 h",
-          "refId": "A"
+          "refId": "A",
+          "instant": true,
+          "range": false
         }
       ]
     },
@@ -753,7 +763,9 @@
         {
           "expr": "sum(increase(comicrent_rentals_returned_total{namespace=\"sa-p9\"}[24h])) or vector(0)",
           "legendFormat": "Rentas devueltas · 24 h",
-          "refId": "A"
+          "refId": "A",
+          "instant": true,
+          "range": false
         }
       ]
     }
