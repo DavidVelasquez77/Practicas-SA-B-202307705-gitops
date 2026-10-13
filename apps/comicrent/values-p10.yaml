@@ -97,7 +97,7 @@ api-gateway:
     enabled: false
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-api-gateway
-    tag: "v0.9.1"
+    tag: "v0.9.2"
     pullPolicy: Always
   service:
     type: LoadBalancer
@@ -107,28 +107,28 @@ auth-service:
   replicaCount: 2
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-auth-service
-    tag: "v0.9.1"
+    tag: "v0.9.2"
     pullPolicy: Always
 
 comics-service:
   replicaCount: 2
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-comics-service
-    tag: "v0.9.1"
+    tag: "v0.9.2"
     pullPolicy: Always
 
 rentals-service:
   replicaCount: 2
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-rentals-service
-    tag: "v0.9.1"
+    tag: "v0.9.2"
     pullPolicy: Always
 
 copies-service:
   replicaCount: 2
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-copies-service
-    tag: "v0.9.1"
+    tag: "v0.9.2"
     pullPolicy: Always
 
 copies-consumer:
