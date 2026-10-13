@@ -119,6 +119,9 @@ comics-service:
 
 rentals-service:
   replicaCount: 2
+  config:
+    comicsServiceUrl: "http://comicrent-p9-workloads-comics-service:3002/graphql"
+    copiesServiceUrl: "http://comicrent-p9-workloads-copies-service:8002"
   image:
     repository: ghcr.io/davidvelasquez77/comicrent-rentals-service
     tag: "v0.9.2"

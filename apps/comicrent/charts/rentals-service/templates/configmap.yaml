@@ -10,9 +10,9 @@ data:
 
   HTTP_TIMEOUT_SECONDS: "5"
 
-  COMICS_SERVICE_URL: "http://comicrent-comics-service:3002/graphql"
+  COMICS_SERVICE_URL: {{ .Values.config.comicsServiceUrl | default "http://comicrent-comics-service:3002/graphql" | quote }}
 
-  COPIES_SERVICE_URL: "http://comicrent-copies-service:8002"
+  COPIES_SERVICE_URL: {{ .Values.config.copiesServiceUrl | default "http://comicrent-copies-service:8002" | quote }}
 
   RABBITMQ_HOST: "comicrent-rabbitmq"
 
