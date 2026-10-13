@@ -503,8 +503,8 @@
     {
       "id": 19,
       "type": "stat",
-      "title": "Historial disponible",
-      "description": "Días de telemetría observables, con máximo de 30 d.",
+      "title": "Edad del primer dato",
+      "description": "Tiempo desde la primera muestra disponible; no prueba continuidad si el clúster estuvo apagado.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -551,7 +551,7 @@
       "targets": [
         {
           "expr": "(time() - min(min_over_time(timestamp(comicrent_http_requests_total{namespace=\"sa-p9\",service=\"api-gateway\",traffic_source=\"user\"})[30d:1h]))) / 86400",
-          "legendFormat": "Historial disponible",
+          "legendFormat": "Edad del primer dato",
           "refId": "A",
           "instant": true,
           "range": false
