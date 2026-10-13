@@ -51,7 +51,7 @@
       },
       "options": {
         "mode": "markdown",
-        "content": "# ◈ ComicRent · Centro de operaciones\n**P10 · GKE / GitOps** &nbsp; · &nbsp; Disponibilidad, latencia, tráfico y saturación &nbsp; · &nbsp; Las sondas Canary se excluyen del SLO de usuario.\n\n> **Lectura honesta:** los objetivos usan 30 días móviles, pero el historial empezó con la instrumentación P10. La fila «Evidencia reciente» muestra una ventana verificable de 24 h; la cifra de 30 d es provisional mientras no transcurra el mes completo."
+        "content": "# ◈ ComicRent · Centro de operaciones\n**P10 · GKE / GitOps** &nbsp; · &nbsp; Las sondas Canary se excluyen del SLO de usuario.\n\n> **30 d = objetivo a largo plazo, historial aún incompleto.** La fila de 24 h muestra mediciones disponibles para la calificación."
       }
     },
     {
@@ -319,11 +319,11 @@
         "x": 0,
         "y": 9,
         "w": 24,
-        "h": 2
+        "h": 3
       },
       "options": {
         "mode": "markdown",
-        "content": "## Evidencia reciente · últimas 24 horas\nVentana corta para la calificación del 17/oct. Muestra solicitudes de usuario y resultados reales; **no sustituye** el SLO declarado de 30 días. Un panel sin datos significa que faltan observaciones, no que el servicio cumplió."
+        "content": "## Evidencia reciente · últimas 24 horas\nSolicitudes de usuario, disponibilidad, rapidez e historial disponible. **La ventana corta no sustituye el SLO de 30 días.** Sin solicitudes, un porcentaje debe quedar sin dato."
       }
     },
     {
@@ -337,7 +337,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 11,
+        "y": 12,
         "w": 6,
         "h": 5
       },
@@ -395,7 +395,7 @@
       },
       "gridPos": {
         "x": 6,
-        "y": 11,
+        "y": 12,
         "w": 6,
         "h": 5
       },
@@ -453,7 +453,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 11,
+        "y": 12,
         "w": 6,
         "h": 5
       },
@@ -511,7 +511,7 @@
       },
       "gridPos": {
         "x": 18,
-        "y": 11,
+        "y": 12,
         "w": 6,
         "h": 5
       },
@@ -569,7 +569,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 16,
+        "y": 17,
         "w": 12,
         "h": 8
       },
@@ -577,8 +577,7 @@
         "defaults": {
           "unit": "reqps",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "#38BDF8"
+            "mode": "palette-classic"
           },
           "custom": {
             "drawStyle": "line",
@@ -624,7 +623,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 16,
+        "y": 17,
         "w": 12,
         "h": 8
       },
@@ -632,8 +631,7 @@
         "defaults": {
           "unit": "s",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "#FBBF24"
+            "mode": "palette-classic"
           },
           "custom": {
             "drawStyle": "line",
@@ -679,7 +677,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 24,
+        "y": 25,
         "w": 12,
         "h": 8
       },
@@ -687,8 +685,7 @@
         "defaults": {
           "unit": "percentunit",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "#FB7185"
+            "mode": "palette-classic"
           },
           "custom": {
             "drawStyle": "line",
@@ -736,7 +733,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 24,
+        "y": 25,
         "w": 12,
         "h": 8
       },
@@ -744,8 +741,7 @@
         "defaults": {
           "unit": "percent",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "#A78BFA"
+            "mode": "palette-classic"
           },
           "custom": {
             "drawStyle": "line",
@@ -791,7 +787,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 32,
+        "y": 33,
         "w": 12,
         "h": 8
       },
@@ -799,8 +795,7 @@
         "defaults": {
           "unit": "percent",
           "color": {
-            "mode": "fixed",
-            "fixedColor": "#2DD4BF"
+            "mode": "palette-classic"
           },
           "custom": {
             "drawStyle": "line",
@@ -846,7 +841,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 32,
+        "y": 33,
         "w": 12,
         "h": 8
       },
@@ -897,13 +892,13 @@
       "transparent": true,
       "gridPos": {
         "x": 0,
-        "y": 40,
+        "y": 41,
         "w": 24,
-        "h": 2
+        "h": 3
       },
       "options": {
         "mode": "markdown",
-        "content": "## Actividad de negocio\nRentas completadas en las últimas 24 horas. Un cero significa ausencia de operaciones; un panel vacío requiere revisar la telemetría."
+        "content": "## Actividad de negocio\nRentas creadas y devueltas en las últimas 24 horas. Cero = sin operaciones; panel vacío = revisar telemetría."
       }
     },
     {
@@ -917,8 +912,8 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 42,
-        "w": 6,
+        "y": 44,
+        "w": 12,
         "h": 5
       },
       "fieldConfig": {
@@ -975,8 +970,8 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 42,
-        "w": 6,
+        "y": 44,
+        "w": 12,
         "h": 5
       },
       "fieldConfig": {
