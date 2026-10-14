@@ -4,6 +4,7 @@ resources:
   - namespace.yaml
   - project.yaml
   - sealed-secret-grafana.yaml
+  - sealed-secret-discord.yaml
   - applications/prometheus.yaml
   - applications/loki.yaml
   - applications/tempo.yaml
