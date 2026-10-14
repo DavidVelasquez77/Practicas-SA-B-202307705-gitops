@@ -99,7 +99,7 @@ alertmanager:
             title: '{{ template "discord.default.title" . }}'
             message: '{{ range .Alerts }}**{{ .Labels.alertname }}** ({{ .Labels.severity }}){{ "\n" }}{{ .Annotations.summary }}{{ "\n" }}{{ .Annotations.description }}{{ "\n" }}Runbook: {{ .Annotations.runbook_url }}{{ "\n\n" }}{{ end }}'
   alertmanagerSpec:
-    replicas: 1
+    replicas: 2
     secrets:
       - p10-alertmanager-discord
     resources:
