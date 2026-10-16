@@ -29,12 +29,10 @@ spec:
     helm:
       valueFiles:
         - values-p10.yaml
-        - values-p10-maintenance.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: sa-p9
-  # Manual sync is used during the one-time database migration so the
-  # application can be quiesced before importing its final consistent copy.
+  # Manual sync keeps application and database lifecycle changes reviewable.
   syncPolicy:
     syncOptions:
       - CreateNamespace=false

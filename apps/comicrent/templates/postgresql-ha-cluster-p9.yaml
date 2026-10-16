@@ -71,6 +71,17 @@ spec:
       password:
         name: comicrent-postgresql-secret
         key: postgres-password
+{{- else if .Values.p9PostgresHA.bootstrapRecovery }}
+  bootstrap:
+    recovery:
+      source: p9-gcs-backup
+  externalClusters:
+    - name: p9-gcs-backup
+      barmanObjectStore:
+        destinationPath: gs://comicrent-p9-velero-2026-202307705/postgresql
+        serverName: comicrent-postgresql-ha
+        googleCredentials:
+          gkeEnvironment: true
 {{- end }}
 ---
 apiVersion: postgresql.cnpg.io/v1
@@ -91,7 +102,7 @@ spec:
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: comicrent-postgresql-ha
+  name: comicrent-postgresql-ha-quorum
   namespace: {{ .Values.namespace | default "sa-p9" | quote }}
   labels:
     app.kubernetes.io/part-of: comicrent

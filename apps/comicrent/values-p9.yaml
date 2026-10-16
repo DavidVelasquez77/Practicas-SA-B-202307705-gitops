@@ -1,12 +1,12 @@
 p9Mode: true
 # P9 environment: three-instance CloudNativePG with synchronous replication
-# and native backups to the persistent GCS bucket. Keep the legacy PVC during
-# the one-time migration until the imported databases are verified.
+# and native backups to the persistent GCS bucket; rebuilds recover from GCS.
 namespace: sa-p9
 
 p9PostgresHA:
   enabled: true
-  bootstrapImport: true
+  bootstrapImport: false
+  bootstrapRecovery: true
 
 global:
   environment: p9-dr
@@ -25,7 +25,7 @@ global:
       enabled: false
 
 postgresql:
-  enabled: true
+  enabled: false
   namespaceOverride: sa-p9
   fullnameOverride: comicrent-postgresql
   architecture: standalone
