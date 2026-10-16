@@ -10,7 +10,7 @@ metadata:
 
 spec:
   {{- if $progressive }}
-  replicas: 3
+  replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 3
   strategy:
     canary:
