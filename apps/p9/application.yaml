@@ -29,6 +29,7 @@ spec:
     helm:
       valueFiles:
         - values-p10.yaml
+        - values-p10-maintenance.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: sa-p9
