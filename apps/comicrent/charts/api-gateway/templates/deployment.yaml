@@ -14,6 +14,11 @@ spec:
   revisionHistoryLimit: 3
   strategy:
     canary:
+      # Keep the transient canary footprint within the three-node pool.
+      # At most one unavailable replica is allowed while the candidate replaces
+      # the stable set; a surge pod cannot be scheduled with required anti-affinity.
+      maxSurge: 0
+      maxUnavailable: 1
       {{- if not (dig "observability" "enabled" false (default dict .Values.global)) }}
       stableService: {{ include "api-gateway.fullname" . }}
       canaryService: comicrent-api-gateway-canary
