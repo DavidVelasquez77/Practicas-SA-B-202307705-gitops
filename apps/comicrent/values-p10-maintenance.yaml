@@ -1,0 +1,22 @@
+# Temporary quiescent mode for the one-time PostgreSQL logical import.
+# Apply this file only during the planned migration window, then restore
+# values-p10.yaml and sync the workload Application.
+api-gateway:
+  replicaCount: 0
+auth-service:
+  replicaCount: 0
+comics-service:
+  replicaCount: 0
+rentals-service:
+  replicaCount: 0
+copies-service:
+  replicaCount: 0
+copies-consumer:
+  replicaCount: 0
+operations-jobs:
+  summaryConsumer:
+    replicaCount: 0
+  cronTick:
+    suspend: true
+  cronSummary:
+    suspend: true

@@ -24,7 +24,7 @@ spec:
         - /spec/selector
   source:
     repoURL: https://github.com/DavidVelasquez77/Practicas-SA-B-202307705-gitops.git
-    targetRevision: main
+    targetRevision: p9/technical-node-resilience
     path: apps/comicrent
     helm:
       valueFiles:
@@ -32,10 +32,9 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: sa-p9
+  # Manual sync is used during the one-time database migration so the
+  # application can be quiesced before importing its final consistent copy.
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
       - CreateNamespace=false
       - ServerSideApply=true

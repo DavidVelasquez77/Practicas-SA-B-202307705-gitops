@@ -4,7 +4,7 @@ metadata:
   name: comicrent-summary-consumer
   namespace: {{ .Values.global.namespace | quote }}
 spec:
-  replicas: 1
+  replicas: {{ if hasKey .Values.summaryConsumer "replicaCount" }}{{ .Values.summaryConsumer.replicaCount }}{{ else }}1{{ end }}
 
   selector:
     matchLabels:
@@ -17,6 +17,14 @@ spec:
         app.kubernetes.io/part-of: comicrent
 
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: summary-consumer
+
       serviceAccountName: comicrent-summary-consumer
       automountServiceAccountToken: false
 

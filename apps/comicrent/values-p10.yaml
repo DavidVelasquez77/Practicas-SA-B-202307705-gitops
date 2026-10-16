@@ -43,6 +43,13 @@ postgresql:
       adminPasswordKey: postgres-password
       userPasswordKey: password
   primary:
+    # This is a single-writer database with one persistent volume. Protect it
+    # from voluntary eviction; scaling this StatefulSet would create a second,
+    # independent database, not a safe HA replica.
+    pdb:
+      create: true
+      minAvailable: 1
+      maxUnavailable: ""
     podSecurityContext:
       enabled: true
       runAsNonRoot: true
@@ -56,6 +63,12 @@ rabbitmq:
   namespaceOverride: sa-p9
   fullnameOverride: comicrent-rabbitmq
   replicaCount: 1
+  # The current application queue topology is single-node. Keep the broker
+  # available during voluntary drains instead of evicting its only pod.
+  pdb:
+    create: true
+    minAvailable: 1
+    maxUnavailable: ""
   # Kyverno requires non-root identity at pod and container level.
   podSecurityContext:
     enabled: true

@@ -5,6 +5,7 @@ metadata:
   namespace: {{ .Values.global.namespace | quote }}
 spec:
   schedule: {{ .Values.cronSummary.schedule | quote }}
+  suspend: {{ .Values.cronSummary.suspend | default false }}
   timeZone: "America/Guatemala"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
