@@ -89,7 +89,7 @@ spec:
                   key: password
 
             - name: DATABASE_URL
-              value: "postgresql://comicrent_user:$(DB_PASSWORD)@comicrent-postgresql:5432/comics_db?schema=public"
+              value: "postgresql://comicrent_user:$(DB_PASSWORD)@comicrent-postgresql-ha-rw:5432/comics_db?schema=public"
 {{ end }}
 
           resources:
@@ -152,7 +152,7 @@ spec:
                   key: password
 
             - name: DATABASE_URL
-              value: "postgresql://comicrent_user:$(DB_PASSWORD)@comicrent-postgresql:5432/comics_db?schema=public"
+              value: "postgresql://comicrent_user:$(DB_PASSWORD)@comicrent-postgresql-ha-rw:5432/comics_db?schema=public"
 {{ end }}
 
           startupProbe:

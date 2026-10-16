@@ -108,7 +108,7 @@ spec:
                   key: password
 
             - name: DATABASE_URL
-              value: "postgresql+psycopg://comicrent_user:$(DB_PASSWORD)@comicrent-postgresql:5432/rentals_db"
+              value: "postgresql+psycopg://comicrent_user:$(DB_PASSWORD)@comicrent-postgresql-ha-rw:5432/rentals_db"
 {{ end }}
 
             - name: RABBITMQ_PASSWORD

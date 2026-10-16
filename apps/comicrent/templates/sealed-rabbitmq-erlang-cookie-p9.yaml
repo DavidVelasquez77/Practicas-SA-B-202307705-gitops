@@ -1,0 +1,16 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: comicrent-rabbitmq-erlang-cookie
+  namespace: sa-p9
+spec:
+  encryptedData:
+    rabbitmq-erlang-cookie: AgCOCq/1tIL+sM+f3vqY3gxk8hQtgUeBddKRDybh2ATLelqqaeABCl0S7NeLlIE2fZwAQuVktn6v/oSX2FE3n+4WH23hdtlpQP5kM6M52bE5Zje65LArRpxTzpucrcSctdQoiHz2XhAMRJJlgQjv9+khGZFk6CGXKcXY6szUd2oQK1NCnbJSXl6cKEOJpl7/jA5yElRvTJmcOlPrzvkUFYwEnQwrsWzvvUXFQ6+r6NZG9fbsAGHHZ92HFMYiUCMH1TDYkvLRZiwMFGNaRjeG+848FEvro7Smd/sqN0RsdEvI+xs0FZ4/xxcGqZzlKRAQGCVnT3uSrvTOOTGiyZVJSRgJUfBMN4I2gTv1vr6mbh4RRfFGFc1j23uw9WQp26m8KXG5GoPN8nX5NPo/QkdL4ujGc52JiG9xE9GYwAa1K4doHLvO7LvMIpG2l/BFujanW71A+Ov+4+epBMWfGG43mQQBc+nPeCeXrNQp+c40cMMAkOrqolqZGXZnrzdn05Whct/HikW2x0vlF6hYUcW6pNMgaMzXVotCIuBbNKW2/hCX4/9lbtAF1duq/cQmKFsiwZn+pNisY062bCh6nmJAXOTYYJFODjUGClcHokdRVUl5N1hUORG6CYx4NvfcmRd2H1gL2uMVGli9p0gC1mViyX+k4uZ94Z0wFN/rrcj3DRu1nxK3mx0Tu9xgCilS68sFRZagI25P7+lIsHsnKVJUSU82rxdRu0ysEJ7upeKffnve6w==
+  template:
+    metadata:
+      creationTimestamp: null
+      name: comicrent-rabbitmq-erlang-cookie
+      namespace: sa-p9
+    type: Opaque

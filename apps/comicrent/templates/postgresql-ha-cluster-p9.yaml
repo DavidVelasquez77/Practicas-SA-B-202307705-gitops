@@ -1,0 +1,103 @@
+{{- if .Values.p9PostgresHA.enabled }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: comicrent-postgresql-ha
+  namespace: {{ .Values.namespace | default "sa-p9" | quote }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.6-system-trixie
+  affinity:
+    enablePodAntiAffinity: true
+    topologyKey: kubernetes.io/hostname
+    podAntiAffinityType: required
+  storage:
+    size: 1Gi
+    storageClass: standard-rwo
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        iam.gke.io/gcp-service-account: velero-p9@comicrent-p6-2026.iam.gserviceaccount.com
+  postgresql:
+    synchronous:
+      method: any
+      number: 1
+      failoverQuorum: true
+    parameters:
+      archive_timeout: 5min
+  backup:
+    barmanObjectStore:
+      destinationPath: gs://comicrent-p9-velero-2026-202307705/postgresql
+      serverName: comicrent-postgresql-ha
+      googleCredentials:
+        gkeEnvironment: true
+      data:
+        compression: gzip
+      wal:
+        compression: gzip
+    retentionPolicy: 30d
+{{- if .Values.p9PostgresHA.bootstrapImport }}
+  bootstrap:
+    initdb:
+      import:
+        type: monolith
+        databases:
+          - auth_db
+          - comics_db
+          - copies_db
+          - operations_db
+          - rentals_db
+        roles:
+          - comicrent_user
+        source:
+          externalCluster: bitnami-p9-source
+  externalClusters:
+    - name: bitnami-p9-source
+      connectionParameters:
+        host: comicrent-postgresql
+        port: "5432"
+        user: postgres
+        dbname: postgres
+        sslmode: disable
+      password:
+        name: comicrent-postgresql-secret
+        key: postgres-password
+{{- end }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: comicrent-postgresql-ha-six-hourly
+  namespace: {{ .Values.namespace | default "sa-p9" | quote }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  schedule: "0 0 */6 * * *"
+  immediate: true
+  backupOwnerReference: self
+  method: barmanObjectStore
+  cluster:
+    name: comicrent-postgresql-ha
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: comicrent-postgresql-ha
+  namespace: {{ .Values.namespace | default "sa-p9" | quote }}
+  labels:
+    app.kubernetes.io/part-of: comicrent
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      cnpg.io/cluster: comicrent-postgresql-ha
+{{- end }}

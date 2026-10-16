@@ -801,3 +801,148 @@ spec:
         - protocol: TCP
           port: 443
 {{- end }}
+
+---
+# CloudNativePG application and replication traffic. This policy is additive to
+# the namespace default-deny and is limited to the P9 PostgreSQL cluster.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: comicrent-postgresql-ha-ingress
+  namespace: {{ .Values.namespace | default "sa-p5" | quote }}
+  labels:
+    app.kubernetes.io/part-of: "comicrent"
+spec:
+  podSelector:
+    matchLabels:
+      cnpg.io/cluster: comicrent-postgresql-ha
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/part-of: comicrent
+        - podSelector:
+            matchLabels:
+              cnpg.io/cluster: comicrent-postgresql-ha
+      ports:
+        - protocol: TCP
+          port: 5432
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: comicrent-postgresql-ha-clients
+  namespace: {{ .Values.namespace | default "sa-p5" | quote }}
+  labels:
+    app.kubernetes.io/part-of: "comicrent"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: comicrent
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              cnpg.io/cluster: comicrent-postgresql-ha
+      ports:
+        - protocol: TCP
+          port: 5432
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: comicrent-postgresql-ha-runtime
+  namespace: {{ .Values.namespace | default "sa-p5" | quote }}
+  labels:
+    app.kubernetes.io/part-of: "comicrent"
+spec:
+  podSelector:
+    matchLabels:
+      cnpg.io/cluster: comicrent-postgresql-ha
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - podSelector:
+            matchLabels:
+              cnpg.io/cluster: comicrent-postgresql-ha
+      ports:
+        - protocol: TCP
+          port: 5432
+    # Temporary source path used only by the one-time logical import.
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: postgresql
+              app.kubernetes.io/instance: comicrent-p9-workloads
+              app.kubernetes.io/component: primary
+      ports:
+        - protocol: TCP
+          port: 5432
+    # Google Workload Identity metadata and Cloud Storage HTTPS API.
+    - to:
+        - ipBlock:
+            cidr: 169.254.169.254/32
+      ports:
+        - protocol: TCP
+          port: 80
+        - protocol: TCP
+          port: 8080
+    - to:
+        - ipBlock:
+            cidr: 169.254.169.252/32
+      ports:
+        - protocol: TCP
+          port: 987
+        - protocol: TCP
+          port: 988
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - protocol: TCP
+          port: 443
+
+{{- if .Values.p9PostgresHA.bootstrapImport }}
+---
+# Allow the new CNPG cluster to read from the legacy Bitnami source while the
+# applications and scheduled jobs remain quiesced for the initial import.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: comicrent-postgresql-legacy-import
+  namespace: {{ .Values.namespace | default "sa-p5" | quote }}
+  labels:
+    app.kubernetes.io/part-of: "comicrent"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: postgresql
+      app.kubernetes.io/instance: comicrent-p9-workloads
+      app.kubernetes.io/component: primary
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              cnpg.io/cluster: comicrent-postgresql-ha
+      ports:
+        - protocol: TCP
+          port: 5432
+{{- end }}
