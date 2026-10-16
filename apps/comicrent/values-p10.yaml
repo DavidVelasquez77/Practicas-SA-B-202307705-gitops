@@ -108,7 +108,7 @@ rabbitmq:
 
 api-gateway:
   replicaCount: 3
-  deploymentRevision: "p10-v0.9.2-node-resilience-review"
+  deploymentRevision: "p10-v0.9.2-node-resilience-review-2"
   config:
     authServiceUrl: "http://comicrent-p9-workloads-auth-service:3001"
     comicsServiceUrl: "http://comicrent-p9-workloads-comics-service:3002/graphql"
